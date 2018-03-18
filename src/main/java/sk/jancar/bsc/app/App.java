@@ -18,21 +18,27 @@ public class App {
     public static void main(String[] args) {
         String paymentFile = null;
         String rateFile = null;
+        boolean ratesFromStdIn = false;
 
         for (String arg : args) {
             if (arg.startsWith("-p=")) {
                 paymentFile = arg.substring(3);
             } else if (arg.startsWith("-r=")) {
                 rateFile = arg.substring(3);
+            } else if (arg.equals("-rs")) {
+                ratesFromStdIn = true;
+            } else {
+                System.err.println("Invalid argument ignored: " + arg);
             }
         }
 
-        new App().start(paymentFile, rateFile);
+        new App().start(paymentFile, rateFile, ratesFromStdIn);
     }
 
-    public void start(String paymentFile, String rateFile) {
+    public void start(String paymentFile, String rateFile, boolean ratesFromStdIn) {
         Timer t = null;
-        List<AbstractDataReader> inputs = new ArrayList<>();
+        List<AbstractDataReader> fileInputs = new ArrayList<>();
+        List<AbstractDataReader> stdInputs = new ArrayList<>();
 
         try {
 
@@ -44,18 +50,21 @@ public class App {
 
             //input(s)
             if (rateFile != null) {
-                inputs.add(new RateDataReader(paymentTracker, new FileInputStream(rateFile)));
+                fileInputs.add(new RateDataReader(paymentTracker, new FileInputStream(rateFile)));
             }
             if (paymentFile != null) {
-                inputs.add(new PaymentDataReader(paymentTracker, new FileInputStream(paymentFile)));
+                fileInputs.add(new PaymentDataReader(paymentTracker, new FileInputStream(paymentFile)));
             }
-            inputs.add(new RateDataReader(paymentTracker, System.in));
-            inputs.add(new PaymentDataReader(paymentTracker, System.in));
+            if (ratesFromStdIn) {
+                stdInputs.add(new RateDataReader(paymentTracker, System.in));
+            }
+            stdInputs.add(new PaymentDataReader(paymentTracker, System.in));
 
 
             //run
             t = runAsyncRepeatedly(outputWriter, 2000);
-            inputs.forEach(this::runSync);
+            fileInputs.forEach(this::runAsync);
+            stdInputs.forEach(this::runSync);
 
         } catch (FileNotFoundException e) {
             System.err.println("A given file not found, stopping: " + e.getMessage());
@@ -63,7 +72,7 @@ public class App {
         } finally {
             if (t != null) t.cancel();
 
-            inputs.forEach((i) -> closeQuietly(i.getInputStream()));
+            fileInputs.forEach((i) -> closeQuietly(i.getInputStream()));
         }
     }
 
