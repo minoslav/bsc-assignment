@@ -50,14 +50,14 @@ public class DataWriterTest {
 
     @Test
     public void testConverted() throws Exception {
-        pt.setUsdRate(Currency.of("EUR"), new BigDecimal("0.8"));
+        pt.setUsdRate(Currency.of("EUR"), new BigDecimal("1.25"));
         pt.addPayment(Currency.of("EUR"), new BigDecimal("1.6"));
         pt.addPayment(Currency.of("CZK"), new BigDecimal("200"));
 
         dataWriter.run();
         String output = bos.toString();
 
-        assertTrue(output.contains("EUR 1.6 (USD 2.00)"));
+        assertTrue(output.contains("EUR 1.6 (USD 2.000)"));
         assertTrue(output.contains("CZK 200"));
     }
 }

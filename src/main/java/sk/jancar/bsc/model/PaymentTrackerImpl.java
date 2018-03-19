@@ -44,9 +44,9 @@ public class PaymentTrackerImpl implements PaymentTracker {
     @Override
     public BigDecimal getNetAmountInUsd(Currency currency) {
         BigDecimal usdRate = getUsdRate(currency);
-        if (usdRate == null) return null;
-        assert usdRate.compareTo(BigDecimal.ZERO) != 0;
-        return getNetAmount(currency).divide(usdRate, USD_SCALE, BigDecimal.ROUND_HALF_UP);
+        BigDecimal amount = getNetAmount(currency);
+        if (usdRate == null || amount == null) return null;
+        return amount.multiply(usdRate);
     }
 
     @Override

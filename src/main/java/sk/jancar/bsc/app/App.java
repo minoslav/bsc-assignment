@@ -13,8 +13,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * A main class of the application.
+ */
 public class App {
 
+    /**
+     * An entry point of the app
+     * @param args see "readme" file for supported args
+     */
     public static void main(String[] args) {
         String paymentFile = null;
         String rateFile = null;
@@ -35,6 +42,12 @@ public class App {
         new App().start(paymentFile, rateFile, ratesFromStdIn);
     }
 
+    /**
+     * Starts the multi-threaded application
+     * @param paymentFile a path to a file to read payments from (may be null)
+     * @param rateFile a path to a file to read exchange rates from (may be null)
+     * @param ratesFromStdIn if true, rates will be read from stdin, if false, then only from a file (if provided)
+     */
     public void start(String paymentFile, String rateFile, boolean ratesFromStdIn) {
         Timer t = null;
         List<AbstractDataReader> fileInputs = new ArrayList<>();
@@ -62,7 +75,7 @@ public class App {
 
 
             //run
-            t = runAsyncRepeatedly(outputWriter, 2000);
+            t = runAsyncRepeatedly(outputWriter, 5000);
             fileInputs.forEach(this::runAsync);
             stdInputs.forEach(this::runSync);
 

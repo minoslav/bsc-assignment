@@ -4,13 +4,25 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
+/**
+ * A currency class
+ */
 public class Currency {
 
+    /**
+     * A format of a currency code (as a regex)
+     */
     public static final String FORMAT_REGEX = "[A-Z][A-Z][A-Z]";
+
     private static final Map<String, Currency> instances = new ConcurrentHashMap<>();
 
     private final String code;
 
+    /**
+     * Returns an instance of Currency for a given currency code
+     * @param code a currency code. Must be in the FORMAT_REGEX format (non-null)
+     * @return an instance of Currency (non-null)
+     */
     public static Currency of(String code) {
         if (code == null) throw new IllegalArgumentException("Code cannot be null");
         if (!instances.containsKey(code)) {
@@ -24,6 +36,10 @@ public class Currency {
         this.code = code;
     }
 
+    /**
+     * Gets the currency code, e.g. "EUR" or "USD"
+     * @return the currency code (non-null)
+     */
     public String getCode() {
         return code;
     }

@@ -7,18 +7,35 @@ import java.math.BigDecimal;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Encapsulates reading from a given stream in the given format (lines of "CURRENCY number").
+ * An action to be taken on read data needs to be overridden.
+ */
 public abstract class AbstractDataReader implements Runnable {
 
     private final InputStream inputStream;
 
-    public AbstractDataReader(InputStream inputStream) {
+    /**
+     * A constructor
+     * @param inputStream a stream to read lines from
+     */
+    protected AbstractDataReader(InputStream inputStream) {
         this.inputStream = inputStream;
     }
 
+    /**
+     * Gets the stream configured during construction
+     * @return the provided input stream (non-null)
+     */
     public InputStream getInputStream() {
         return inputStream;
     }
 
+    /**
+     * Reads from the provided stream line by line and calls parseLine on each line until EOF or a line containing "quit".
+     * IOException during reading is swallowed and stops the reading.
+     * The stream is not closed in the end.
+     */
     @Override
     public void run() {
         try {
@@ -40,6 +57,14 @@ public abstract class AbstractDataReader implements Runnable {
         }
     }
 
+    /**
+     * Parses a given line and takes an action on it (actOnInput method). A line should be in the format:
+     * "CURRENCY_CODE SPACE NUMBER", where CURRENCY_CODE format depends on the Currency class and its code format, SPACE is one or more whitespaces,
+     * and NUMBER is in a format parsable by the BigDecimal class.
+     * If the line is not in the specified format, no action is taken on it (the line is skipped).
+     * @param line a line to be parsed (non-null)
+     * @return true if parsed successfully, false otherwise
+     */
     public boolean parseLine(String line) {
         Matcher matcher = Pattern.compile("(" + Currency.FORMAT_REGEX + ")\\s+(.+)").matcher(line);
         if (matcher.matches()) {
@@ -57,6 +82,11 @@ public abstract class AbstractDataReader implements Runnable {
         }
     }
 
+    /**
+     * A hook method for overriding in a concrete reader. Defines what to do with a parsed line.
+     * @param currency parsed currency object (non-null)
+     * @param number parsed (decimal) number (non-null)
+     */
     abstract void actOnInput(Currency currency, BigDecimal number);
 
 }

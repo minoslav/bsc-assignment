@@ -80,22 +80,22 @@ public class PaymentTrackerTest {
         assertNull(pt.getNetAmountInUsd(Currency.of("EUR")));
 
         pt.setUsdRate(Currency.of("EUR"), d("999"));
-        pt.setUsdRate(Currency.of("EUR"), d("0.81323954"));
-        assertBDEquals(d("0.81323954"), pt.getUsdRate(Currency.of("EUR")));
+        pt.setUsdRate(Currency.of("EUR"), d("1.22965"));
+        assertBDEquals(d("1.22965"), pt.getUsdRate(Currency.of("EUR")));
 
-        add("EUR", "0.81323954");
-        check("EUR", "0.81323954");
-        assertBDEquals(d("1.00"), pt.getNetAmountInUsd(Currency.of("EUR")));
+        add("EUR", "1");
+        check("EUR", "1");
+        assertBDEquals(d("1.22965"), pt.getNetAmountInUsd(Currency.of("EUR")));
 
-        add("EUR", "-.81323954");
+        add("EUR", "-1");
         check("EUR", "0");
         assertBDEquals(d("0"), pt.getNetAmountInUsd(Currency.of("EUR")));
         assertBDEquals(d("0.00"), pt.getNetAmountInUsd(Currency.of("EUR")));
 
         add("EUR", "12.456");
         check("EUR", "12.456");
-        // 12.456 / 0.81323954 = 15.316520394... round to 2 places: 15.32
-        assertBDEquals(d("15.32"), pt.getNetAmountInUsd(Currency.of("EUR")));
+        // 12.456 * 1.22965 = 15.3165204
+        assertBDEquals(d("15.3165204"), pt.getNetAmountInUsd(Currency.of("EUR")));
     }
 
     @Test(expected = PTLogicException.class)
