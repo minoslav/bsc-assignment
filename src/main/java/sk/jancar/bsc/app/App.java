@@ -75,7 +75,7 @@ public class App {
 
 
             //run
-            t = runAsyncRepeatedly(outputWriter, 5000);
+            t = runAsyncRepeatedly(outputWriter, 60000);
             fileInputs.forEach(this::runAsync);
             stdInputs.forEach(this::runSync);
 
