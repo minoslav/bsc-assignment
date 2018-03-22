@@ -17,7 +17,7 @@ public abstract class AbstractDataReader implements Runnable {
 
     /**
      * A constructor
-     * @param inputStream a stream to read lines from
+     * @param inputStream a stream to read lines from (non-null)
      */
     protected AbstractDataReader(InputStream inputStream) {
         this.inputStream = inputStream;
@@ -87,6 +87,6 @@ public abstract class AbstractDataReader implements Runnable {
      * @param currency parsed currency object (non-null)
      * @param number parsed (decimal) number (non-null)
      */
-    abstract void actOnInput(Currency currency, BigDecimal number);
+    abstract protected void actOnInput(Currency currency, BigDecimal number);
 
 }

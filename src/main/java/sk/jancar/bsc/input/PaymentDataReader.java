@@ -28,7 +28,7 @@ public class PaymentDataReader extends AbstractDataReader {
      * @param currency parsed currency object (non-null)
      * @param number parsed (decimal) number (non-null)
      */
-    void actOnInput(Currency currency, BigDecimal number) {
+    protected void actOnInput(Currency currency, BigDecimal number) {
         paymentTracker.addPayment(currency, number);
     }
 

@@ -49,7 +49,15 @@ public interface PaymentTracker {
     /**
      * Gets a net amount for a given currency converted to USD using the last set exchange rate
      * @param currency a currency (non-null)
-     * @return a net amount (may be null if the rate has not been set yet or if no payment in the currency was made)
+     * @return a net amount in USD (may be null if the rate has not been set yet or if no payment in the currency was made)
      */
     BigDecimal getNetAmountInUsd(Currency currency);
+
+    /**
+     * Converts a given net amount in a given currency to USD using the last set exchange rate
+     * @param currency a currency (non-null)
+     * @param netAmount a net amount in the currency to be converted (may be null)
+     * @return a net amount in USD (may be null if the rate has not been set yet or if the provided netAmount is null)
+     */
+    BigDecimal getNetAmountInUsd(Currency currency, BigDecimal netAmount);
 }

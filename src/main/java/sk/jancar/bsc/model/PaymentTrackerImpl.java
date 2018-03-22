@@ -43,10 +43,14 @@ public class PaymentTrackerImpl implements PaymentTracker {
 
     @Override
     public BigDecimal getNetAmountInUsd(Currency currency) {
+        return getNetAmountInUsd(currency, getNetAmount(currency));
+    }
+
+    @Override
+    public BigDecimal getNetAmountInUsd(Currency currency, BigDecimal netAmount) {
         BigDecimal usdRate = getUsdRate(currency);
-        BigDecimal amount = getNetAmount(currency);
-        if (usdRate == null || amount == null) return null;
-        return amount.multiply(usdRate);
+        if (usdRate == null || netAmount == null) return null;
+        return netAmount.multiply(usdRate);
     }
 
     @Override

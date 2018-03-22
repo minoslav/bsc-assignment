@@ -30,7 +30,7 @@ public class RateDataReader extends AbstractDataReader {
      * @param currency parsed currency object (non-null)
      * @param number parsed (decimal) number (non-null)
      */
-    void actOnInput(Currency currency, BigDecimal number) {
+    protected void actOnInput(Currency currency, BigDecimal number) {
         try {
             paymentTracker.setUsdRate(currency, number);
         } catch (PTLogicException e) {

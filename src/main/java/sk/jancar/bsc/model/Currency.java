@@ -5,7 +5,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 /**
- * A currency class
+ * A currency class.
+ * Thread-safe. Instances are immutable.
  */
 public class Currency {
 

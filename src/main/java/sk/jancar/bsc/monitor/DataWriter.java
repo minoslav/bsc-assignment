@@ -32,10 +32,11 @@ public class DataWriter implements Runnable {
     public void run() {
         stream.println("# Net amounts:");
 
+        //consecutive calls to e.getValue() should return the same value (captured in MapEntry; see ConcurrentHashMap.MapEntry)
         paymentTracker.getNetAmounts().entrySet().stream()
             .filter(e -> e.getValue().compareTo(BigDecimal.ZERO) != 0)
             .forEach(e -> {
-                BigDecimal inUsd = paymentTracker.getNetAmountInUsd(e.getKey());
+                BigDecimal inUsd = paymentTracker.getNetAmountInUsd(e.getKey(), e.getValue()); //using *the* already retrieved value for a conversion
 
                 if (inUsd == null) {
                     stream.format("%s %s%n", e.getKey(), e.getValue()); //%s: canonical rep. since a format was not given
