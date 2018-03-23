@@ -3,6 +3,7 @@ package sk.jancar.bsc.model;
 import org.junit.*;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -98,6 +99,17 @@ public class PaymentTrackerTest {
         assertBDEquals(d("15.3165204"), pt.getNetAmountInUsd(Currency.of("EUR")));
     }
 
+    @Test
+    public void testDirectUsdConversion() throws Exception {
+        pt.setUsdRate(Currency.of("HRK"), d("0.16563"));
+        assertBDEquals(d("0.16563"), pt.getUsdRate(Currency.of("HRK")));
+
+        assertBDEquals(d("0"), pt.getNetAmountInUsd(Currency.of("HRK"), d("0")));
+        assertBDEquals(d("0.16563"), pt.getNetAmountInUsd(Currency.of("HRK"), d("1")));
+        assertBDEquals(d("-0.16563"), pt.getNetAmountInUsd(Currency.of("HRK"), d("-1")));
+        assertBDEquals(d("75.65796207"), pt.getNetAmountInUsd(Currency.of("HRK"), d("456.789")));
+    }
+
     @Test(expected = PTLogicException.class)
     public void testInvalidNegativeRate() throws Exception {
         pt.setUsdRate(Currency.of("SKK"), d("-5"));
@@ -123,6 +135,18 @@ public class PaymentTrackerTest {
         pt.setUsdRate(Currency.of("USD"), d("1.00"));
     }
 
+    @Test(expected = UnsupportedOperationException.class)
+    public void testReadOnlyMap() throws Exception {
+        pt.getNetAmounts().put(Currency.of("SKK"), d("45"));
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testReadOnlyMapEntry() throws Exception {
+        pt.addPayment(Currency.of("SKK"), d("123"));
+
+        assertEquals(1, pt.getNetAmounts().entrySet().size());
+        pt.getNetAmounts().entrySet().iterator().next().setValue(d("456"));
+    }
 
     //private helper methods for concise test cases
 
